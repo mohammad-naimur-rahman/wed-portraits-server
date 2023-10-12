@@ -5,6 +5,7 @@ export interface IUser {
   email: string
   password: string
   image?: string
+  role: 'super_admin' | 'admin' | 'user'
   reservations: Types.ObjectId[]
 }
 

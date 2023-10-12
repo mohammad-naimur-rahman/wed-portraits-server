@@ -1,3 +1,5 @@
+import { IUser } from '../user/user.interface'
+
 export interface ILoginUser {
   email: string
   password: string
@@ -10,9 +12,10 @@ export interface ISignupUser {
   image?: string
 }
 
-export interface ILoginUserResponse {
+export interface IAuthUserResponse {
   accessToken: string
-  refreshToken?: string
+  refreshToken: string
+  data: IUser
 }
 
 export interface IAccessTokenResponse {

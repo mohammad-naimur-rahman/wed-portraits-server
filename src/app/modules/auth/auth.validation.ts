@@ -17,7 +17,16 @@ const signupUserZSchema = z.object({
   }),
 })
 
+const accessTokenZSchema = z.object({
+  cookies: z.object({
+    refreshToken: z.string({
+      required_error: 'Refresh Token is required',
+    }),
+  }),
+})
+
 export const AuthValidation = {
   loginUserZSchema,
   signupUserZSchema,
+  accessTokenZSchema,
 }
