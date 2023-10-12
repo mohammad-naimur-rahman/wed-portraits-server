@@ -6,7 +6,7 @@ import { AuthValidation } from './auth.validation'
 const router = Router()
 
 router.post(
-  '/signin',
+  '/login',
   validateRequest(AuthValidation.loginUserZSchema),
   AuthController.loginUser
 )
