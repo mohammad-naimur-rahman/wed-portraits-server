@@ -1,6 +1,6 @@
-import express from 'express';
+import express from 'express'
 
-const router = express.Router();
+const router = express.Router()
 
 const moduleRoutes = [
   // ... routes
@@ -8,7 +8,7 @@ const moduleRoutes = [
     path: '',
     routes: '',
   },
-];
+]
 
-moduleRoutes.forEach(route => router.use(route.path, route.route));
-export default router;
+moduleRoutes.forEach(route => router.use(route.path, route.route))
+export default router
