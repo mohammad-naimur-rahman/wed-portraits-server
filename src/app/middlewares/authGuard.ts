@@ -5,7 +5,7 @@ import config from '../../config'
 import ApiError from '../../errors/ApiError'
 import { jwtHelpers } from '../../helpers/jwtHelpers'
 
-const auth =
+const authGuard =
   (...requiredRoles: string[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -31,4 +31,4 @@ const auth =
     }
   }
 
-export default auth
+export default authGuard

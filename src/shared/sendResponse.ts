@@ -2,7 +2,7 @@ import { Response } from 'express'
 
 type IApiReponse<T> = {
   statusCode: number
-  success: boolean
+  success?: boolean
   message?: string | null
   meta?: {
     page: number
@@ -15,7 +15,7 @@ type IApiReponse<T> = {
 const sendResponse = <T>(res: Response, data: IApiReponse<T>): void => {
   const responseData: IApiReponse<T> = {
     statusCode: data.statusCode,
-    success: data.success,
+    success: data.success || true,
     message: data.message || null,
     meta: data.meta || null || undefined,
     data: data.data || null || undefined,

@@ -1,4 +1,6 @@
-import { ErrorRequestHandler, Request, Response } from 'express'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
+import { ErrorRequestHandler, NextFunction, Request, Response } from 'express'
 import config from '../../config'
 import ApiError from '../../errors/ApiError'
 import handleValidationError from '../../errors/handleValidationError'
@@ -11,7 +13,8 @@ import { IGenericErrorMessage } from '../../interfaces/error'
 const globalErrorHandler: ErrorRequestHandler = (
   error,
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   console.error(`🐱‍🏍 globalErrorHandler ~~`, { error })
 
