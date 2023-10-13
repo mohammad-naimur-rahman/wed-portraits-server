@@ -22,7 +22,14 @@ router
     ),
     UserController.getUser
   )
-  .patch(authGuard(ENUM_USER_ROLE.USER), UserController.updateUser)
+  .patch(
+    authGuard(
+      ENUM_USER_ROLE.SUPER_ADMIN,
+      ENUM_USER_ROLE.ADMIN,
+      ENUM_USER_ROLE.USER
+    ),
+    UserController.updateUser
+  )
   .delete(
     authGuard(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
     UserController.deleteUser

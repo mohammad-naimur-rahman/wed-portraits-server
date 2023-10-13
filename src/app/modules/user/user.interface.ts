@@ -1,11 +1,12 @@
 import { Model, Types } from 'mongoose'
+import { ENUM_USER_ROLE } from '../../../enums/user'
 
 export interface IUser {
   name: string
   email: string
   password: string
   image?: string
-  role: 'super_admin' | 'admin' | 'user'
+  role: keyof typeof ENUM_USER_ROLE
   reservations: Types.ObjectId[]
 }
 

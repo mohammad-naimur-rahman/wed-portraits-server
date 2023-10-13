@@ -2,9 +2,10 @@ import bcrypt from 'bcrypt'
 import { Schema, model } from 'mongoose'
 import config from '../../../config'
 import { emailRegex, signUpRegex } from '../../../constants/regex'
+import { ENUM_USER_ROLE } from '../../../enums/user'
 import { IUser, UserModel } from './user.interface'
 
-const UserSchema = new Schema<IUser>(
+const UserSchema = new Schema<IUser, UserModel>(
   {
     name: {
       type: String,
@@ -28,8 +29,7 @@ const UserSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ['super_admin', 'admin', 'user'],
-      default: 'user',
+      enum: Object.values(ENUM_USER_ROLE),
     },
     reservations: [
       {
