@@ -7,7 +7,7 @@ export interface IUser {
   password: string
   image?: string
   role: keyof typeof ENUM_USER_ROLE
-  reservations: Types.ObjectId[]
+  bookings: Types.ObjectId[]
 }
 
 export type UserModel = Model<IUser, Record<string, unknown>>

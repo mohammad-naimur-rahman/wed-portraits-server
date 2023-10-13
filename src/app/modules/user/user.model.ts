@@ -31,7 +31,7 @@ const UserSchema = new Schema<IUser, UserModel>(
       type: String,
       enum: Object.values(ENUM_USER_ROLE),
     },
-    reservations: [
+    bookings: [
       {
         type: Schema.Types.ObjectId,
         ref: 'Reservation',

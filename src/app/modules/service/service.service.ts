@@ -3,8 +3,8 @@ import ApiError from '../../../errors/ApiError'
 import { IService } from './service.interface'
 import { Service } from './service.model'
 
-const createService = async (body: IService): Promise<IService | null> => {
-  const createdService = await Service.create(body)
+const createService = async (payload: IService): Promise<IService | null> => {
+  const createdService = await Service.create(payload)
   return createdService
 }
 
@@ -30,9 +30,9 @@ const getService = async (id: string): Promise<IService | null> => {
 
 const updateService = async (
   id: string,
-  body: IService
+  payload: IService
 ): Promise<IService | null> => {
-  const updatedService = await Service.findByIdAndUpdate(id, body, {
+  const updatedService = await Service.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
   })

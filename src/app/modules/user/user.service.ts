@@ -18,8 +18,11 @@ const getUser = async (id: string): Promise<IUser | null> => {
   return singleUser
 }
 
-const updateUser = async (id: string, body: IUser): Promise<IUser | null> => {
-  const updatedUser = await User.findByIdAndUpdate(id, body, {
+const updateUser = async (
+  id: string,
+  payload: IUser
+): Promise<IUser | null> => {
+  const updatedUser = await User.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
   })

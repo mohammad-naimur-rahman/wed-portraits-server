@@ -16,10 +16,12 @@ const ReviewSchema = new Schema<IReview, ReviewModel>(
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
+      reqruied: true,
     },
     service: {
       type: Schema.Types.ObjectId,
       ref: 'Service',
+      reqruied: true,
     },
   },
   {

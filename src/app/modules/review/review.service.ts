@@ -7,7 +7,7 @@ import { IReview } from './review.interface'
 import { Review } from './review.model'
 
 const createReview = async (
-  body: IReview,
+  payload: IReview,
   user: JwtPayload
 ): Promise<IReview | null> => {
   const session = await startSession()
@@ -17,7 +17,7 @@ const createReview = async (
 
     // Creating review
     const createdReview = await Review.create(
-      [{ ...body, user: user.userId }],
+      [{ ...payload, user: user.userId }],
       {
         session,
       }
@@ -25,7 +25,7 @@ const createReview = async (
 
     // Adding review to the specific service reviews array
     await Service.updateOne(
-      { _id: body.service },
+      { _id: payload.service },
       {
         $push: { reviews: createdReview[0]._id },
       },
