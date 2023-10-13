@@ -13,8 +13,8 @@ const getAllBlogs = async (): Promise<IBlog[]> => {
   return allBlogs
 }
 
-const getBlog = async (id: string): Promise<IBlog | null> => {
-  const singleBlog = await Blog.findById(id).populate('user')
+const getBlog = async (slug: string): Promise<IBlog | null> => {
+  const singleBlog = await Blog.findOne({ slug }).populate('user')
 
   if (!singleBlog) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Blog not found')

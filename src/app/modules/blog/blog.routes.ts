@@ -18,7 +18,6 @@ router
 
 router
   .route('/:id')
-  .get(BlogController.getBlog)
   .patch(
     authGuard(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
     validateRequest(BlogValidation.updateBlogZSchema),
@@ -28,5 +27,7 @@ router
     authGuard(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
     BlogController.deleteBlog
   )
+
+router.get('/:slug', BlogController.getBlog)
 
 export const BlogRoutes = router

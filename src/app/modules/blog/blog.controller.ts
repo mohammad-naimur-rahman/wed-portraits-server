@@ -23,7 +23,7 @@ const getALllBlogs = catchAsync(async (req, res) => {
 })
 
 const getBlog = catchAsync(async (req, res) => {
-  const singleBlog = await BlogService.getBlog(req.params.id)
+  const singleBlog = await BlogService.getBlog(req.params.slug)
   sendResponse<IBlog>(res, {
     statusCode: httpStatus.OK,
     data: singleBlog,
