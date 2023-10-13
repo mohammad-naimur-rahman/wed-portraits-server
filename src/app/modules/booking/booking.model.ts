@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose'
+import { bookingStatusArr } from './booking.constants'
 import { BookingModel, IBooking } from './booking.interface'
 
 const BookingSchema = new Schema<IBooking, BookingModel>(
@@ -19,7 +20,7 @@ const BookingSchema = new Schema<IBooking, BookingModel>(
     },
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'cancelled', 'ongoing', 'fulfilled'],
+      enum: bookingStatusArr,
       default: 'pending',
     },
   },

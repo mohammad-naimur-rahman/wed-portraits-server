@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'
+import { serviceCategoryArray } from './service.constants'
 import { IService, ServiceModel } from './service.interface'
 
 const ServiceSchema = new Schema<IService, ServiceModel>(
@@ -23,7 +24,7 @@ const ServiceSchema = new Schema<IService, ServiceModel>(
     },
     category: {
       type: String,
-      enum: ['Wedding', 'Birthday', 'Anniversary', 'Others'],
+      enum: serviceCategoryArray,
       required: true,
     },
     reviews: {

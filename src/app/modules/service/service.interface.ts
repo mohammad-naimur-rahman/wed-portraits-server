@@ -1,4 +1,5 @@
 import { Model, Types } from 'mongoose'
+import { serviceCategoryArray } from './service.constants'
 
 export interface IService {
   title: string
@@ -11,3 +12,10 @@ export interface IService {
 }
 
 export type ServiceModel = Model<IService, Record<string, unknown>>
+
+export interface IServiceFilters {
+  search: string
+  title: string
+  price: number
+  category: typeof serviceCategoryArray
+}

@@ -70,19 +70,40 @@ const getBooking = async (id: string): Promise<IBooking | null> => {
   return singleBooking
 }
 
-// TODO: can't go backword, user only can cancel booking
 const updateBooking = async (
   id: string,
   payload: IBooking
 ): Promise<IBooking | null> => {
+  const currentBooking = await Booking.findById(id)
+
+  if (!currentBooking) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Booking not found')
+  }
+
+  const currentStatus = currentBooking.status
+
+  const { status } = payload
+
+  if (
+    (currentStatus === 'confirmed' ||
+      currentStatus === 'ongoing' ||
+      currentStatus === 'fulfilled') &&
+    status === 'cancelled'
+  ) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Booking cannot be cancelled after confirmation!'
+    )
+  }
+
+  if (currentStatus !== 'pending' && status == 'pending') {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Booking cannot be backwarded!')
+  }
+
   const updatedBooking = await Booking.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
   })
-
-  if (!updatedBooking) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Booking not found')
-  }
 
   return updatedBooking
 }
