@@ -16,6 +16,6 @@ export type ServiceModel = Model<IService, Record<string, unknown>>
 export interface IServiceFilters {
   search: string
   title: string
-  price: number
+  price: string
   category: typeof serviceCategoryArray
 }

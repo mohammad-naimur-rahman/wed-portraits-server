@@ -1,5 +1,6 @@
 import httpStatus from 'http-status'
 import ApiError from '../../../errors/ApiError'
+import { IGenericResponse } from '../../../interfaces/common'
 import { IService } from './service.interface'
 import { Service } from './service.model'
 
@@ -8,9 +9,54 @@ const createService = async (payload: IService): Promise<IService | null> => {
   return createdService
 }
 
-const getAllServices = async (): Promise<IService[]> => {
-  const allServices = await Service.find()
-  return allServices
+const getAllServices = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  query: any
+): Promise<IGenericResponse<IService[]>> => {
+  console.log(query)
+  let baseQuery = Service.find()
+
+  // Search by title
+  if (query.title) {
+    baseQuery = baseQuery.where('title').regex(new RegExp(query.title, 'i'))
+  }
+
+  // Filter by price range
+  if (query.minPrice) {
+    baseQuery = baseQuery.where('price').gte(query.minPrice)
+  }
+  if (query.maxPrice) {
+    baseQuery = baseQuery.where('price').lte(query.maxPrice)
+  }
+
+  // Filter by category
+  if (query.category) {
+    baseQuery = baseQuery.where('category').equals(query.category)
+  }
+
+  // Sort by a field (default: 'price')
+  const sortByField = query.sortBy || 'price'
+  const sortOrder = query.sortOrder === 'desc' ? -1 : 1
+  baseQuery = baseQuery.sort({ [sortByField]: sortOrder })
+
+  // Pagination
+  const page = parseInt(query.page, 10) || 1
+  const limit = parseInt(query.limit, 10) || 10
+  const skip = (page - 1) * limit
+  baseQuery = baseQuery.skip(skip).limit(limit)
+
+  const total = await baseQuery.countDocuments()
+  const allServices = await baseQuery.exec()
+
+  // const allServices = await Service.find()
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: allServices,
+  }
 }
 
 const getService = async (id: string): Promise<IService | null> => {

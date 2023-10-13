@@ -7,4 +7,4 @@ export const serviceCategoryArray = [
 
 export const serviceFilterableFields = ['search', 'title', 'price', 'category']
 
-export const serviceSearchableFiels = ['title']
+export const serviceSearchableFields = ['title']

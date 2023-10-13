@@ -14,10 +14,11 @@ const createService = catchAsync(async (req, res) => {
 })
 
 const getALllServices = catchAsync(async (req, res) => {
-  const allServices = await ServiceService.getAllServices()
+  const allServices = await ServiceService.getAllServices(req.query)
   sendResponse<IService[]>(res, {
     statusCode: httpStatus.OK,
-    data: allServices,
+    meta: allServices.meta,
+    data: allServices.data,
     message: 'All Services retrieved successfully!',
   })
 })
