@@ -17,8 +17,8 @@ const getAllServices = async (
   let baseQuery = Service.find()
 
   // Search by title
-  if (query.title) {
-    baseQuery = baseQuery.where('title').regex(new RegExp(query.title, 'i'))
+  if (query.search) {
+    baseQuery = baseQuery.where('title').regex(new RegExp(query.search, 'i'))
   }
 
   // Filter by price range
