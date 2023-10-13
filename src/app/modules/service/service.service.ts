@@ -15,7 +15,7 @@ const getAllServices = async (): Promise<IService[]> => {
 
 const getService = async (id: string): Promise<IService | null> => {
   const singleService = await Service.findById(id).populate({
-    path: 'service',
+    path: 'reviews',
     options: {
       populate: ['user'],
     },
