@@ -12,6 +12,16 @@ router
     UserController.getALllUsers
   )
 
+router.get(
+  '/profile',
+  authGuard(
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.USER
+  ),
+  UserController.getOwnProfile
+)
+
 router
   .route('/:id')
   .get(

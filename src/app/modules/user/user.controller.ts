@@ -1,4 +1,5 @@
 import httpStatus from 'http-status'
+import { RequestWithUser } from '../../../interfaces/common'
 import catchAsync from '../../../shared/catchAsync'
 import sendResponse from '../../../shared/sendResponse'
 import { IUser } from './user.interface'
@@ -19,6 +20,15 @@ const getUser = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     data: user,
     message: 'User retrieved successfully!',
+  })
+})
+
+const getOwnProfile = catchAsync(async (req, res) => {
+  const user = await UserService.getOwnProfile((req as RequestWithUser).user)
+  sendResponse<IUser>(res, {
+    statusCode: httpStatus.OK,
+    data: user,
+    message: 'Profile retrieved successfully!',
   })
 })
 
@@ -47,6 +57,7 @@ const deleteUser = catchAsync(async (req, res) => {
 export const UserController = {
   getALllUsers,
   getUser,
+  getOwnProfile,
   updateUser,
   deleteUser,
 }

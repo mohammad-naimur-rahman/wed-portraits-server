@@ -18,11 +18,11 @@ const loginUser = async (payload: ILoginUser): Promise<IAuthUserResponse> => {
   const isExist = await User.findOne({ email })
 
   if (!isExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User does not exist')
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User does not exist!')
   }
 
   if (isExist.password && !(await bcrypt.compare(password, isExist.password))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect')
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Password is incorrect!')
   }
 
   const { id: userId, role } = isExist
