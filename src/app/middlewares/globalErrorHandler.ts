@@ -5,6 +5,7 @@ import config from '../../config'
 import ApiError from '../../errors/ApiError'
 import handleValidationError from '../../errors/handleValidationError'
 
+import httpStatus from 'http-status'
 import { ZodError } from 'zod'
 import handleCastError from '../../errors/handleCastError'
 import handleZodError from '../../errors/handleZodError'
@@ -16,7 +17,7 @@ const globalErrorHandler: ErrorRequestHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error(`🐱‍🏍 globalErrorHandler ~~`, { error })
+  console.error(`🐱‍🏍 globalErrorHandler`, { error })
 
   let statusCode = 500
   let message = 'Something went wrong !'
@@ -32,6 +33,19 @@ const globalErrorHandler: ErrorRequestHandler = (
     statusCode = simplifiedError.statusCode
     message = simplifiedError.message
     errorMessages = simplifiedError.errorMessages
+  } else if (error?.code === 11000 && error?.codeName === 'DuplicateKey') {
+    statusCode = httpStatus.BAD_REQUEST
+    message = `There's another ${Object.keys(
+      error.keyValue
+    )} already exists with the value ${Object.values(error.keyValue)}`
+    errorMessages = [
+      {
+        path: '',
+        message: `There's another ${Object.keys(
+          error.keyValue
+        )} already exists with the value ${Object.values(error.keyValue)}`,
+      },
+    ]
   } else if (error?.name === 'CastError') {
     const simplifiedError = handleCastError(error)
     statusCode = simplifiedError.statusCode

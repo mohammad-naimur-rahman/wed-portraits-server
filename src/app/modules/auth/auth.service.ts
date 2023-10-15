@@ -15,7 +15,7 @@ import {
 
 const loginUser = async (payload: ILoginUser): Promise<IAuthUserResponse> => {
   const { email, password } = payload
-  const isExist = await User.findOne({ email })
+  const isExist = await User.findOne({ email }).select('-password')
 
   if (!isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User does not exist!')

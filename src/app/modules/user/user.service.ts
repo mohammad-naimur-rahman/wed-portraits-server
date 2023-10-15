@@ -31,8 +31,16 @@ const getOwnProfile = async (user: JwtPayload): Promise<IUser | null> => {
 
 const updateUser = async (
   id: string,
-  payload: IUser
+  payload: IUser,
+  user: JwtPayload
 ): Promise<IUser | null> => {
+  if (user.userId !== id) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      `You can't change other user's profile`
+    )
+  }
+
   const updatedUser = await User.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
