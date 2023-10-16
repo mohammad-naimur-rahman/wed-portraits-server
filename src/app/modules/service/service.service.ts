@@ -13,29 +13,26 @@ const getAllServices = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query: any
 ): Promise<IGenericResponse<IService[]>> => {
-  console.log(query)
   let baseQuery = Service.find()
 
   // Search by title
-  if (query.search) {
+  if (query.search)
     baseQuery = baseQuery.where('title').regex(new RegExp(query.search, 'i'))
-  }
 
   // Filter by price range
-  if (query.minPrice) {
-    baseQuery = baseQuery.where('price').gte(query.minPrice)
-  }
-  if (query.maxPrice) {
-    baseQuery = baseQuery.where('price').lte(query.maxPrice)
-  }
+  if (query.minPrice) baseQuery = baseQuery.where('price').gte(query.minPrice)
+  if (query.maxPrice) baseQuery = baseQuery.where('price').lte(query.maxPrice)
 
   // Filter by category
-  if (query.category) {
+  if (query.category && query.category !== 'all')
     baseQuery = baseQuery.where('category').equals(query.category)
-  }
 
-  // Sort by a field (default: 'price')
-  const sortByField = query.sortBy || 'price'
+  // Filter by status
+  if (query.status && query.status !== 'all')
+    baseQuery = baseQuery.where('status').equals(query.status)
+
+  // Sort by a field
+  const sortByField = query.sortBy || 'createdAt'
   const sortOrder = query.sortOrder === 'desc' ? -1 : 1
   baseQuery = baseQuery.sort({ [sortByField]: sortOrder })
 
@@ -45,10 +42,20 @@ const getAllServices = async (
   const skip = (page - 1) * limit
   baseQuery = baseQuery.skip(skip).limit(limit)
 
-  const total = await baseQuery.countDocuments()
   const allServices = await baseQuery.exec()
 
-  // const allServices = await Service.find()
+  // Counting total
+  let countQuery = Service.find()
+  if (query.search)
+    countQuery = countQuery.where('title').regex(new RegExp(query.search, 'i'))
+  if (query.minPrice) countQuery = countQuery.where('price').gte(query.minPrice)
+  if (query.maxPrice) countQuery = countQuery.where('price').lte(query.maxPrice)
+  if (query.category)
+    countQuery = countQuery.where('category').equals(query.category)
+  if (query.category)
+    countQuery = countQuery.where('category').equals(query.category)
+
+  const total = await countQuery.countDocuments()
   return {
     meta: {
       page,

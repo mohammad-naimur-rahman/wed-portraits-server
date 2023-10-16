@@ -6,7 +6,7 @@ import { IUser } from './user.interface'
 import { UserService } from './user.service'
 
 const getALllUsers = catchAsync(async (req, res) => {
-  const allUsers = await UserService.getAllUsers()
+  const allUsers = await UserService.getAllUsers(req.query)
   sendResponse<IUser[]>(res, {
     statusCode: httpStatus.OK,
     data: allUsers,
@@ -15,7 +15,7 @@ const getALllUsers = catchAsync(async (req, res) => {
 })
 
 const getUser = catchAsync(async (req, res) => {
-  const user = await UserService.getUser(req.params.id)
+  const user = await UserService.getUser(req.params.email)
   sendResponse<IUser>(res, {
     statusCode: httpStatus.OK,
     data: user,
@@ -49,6 +49,19 @@ const updateUser = catchAsync(async (req, res) => {
   })
 })
 
+const changeRole = catchAsync(async (req, res) => {
+  const {
+    params: { email },
+    body,
+  } = req
+  await UserService.changeRole(email, body)
+  sendResponse<IUser>(res, {
+    statusCode: httpStatus.OK,
+    data: null,
+    message: 'User role changed successfully!',
+  })
+})
+
 const deleteUser = catchAsync(async (req, res) => {
   const deltedUser = await UserService.deleteUser(req.params.id)
   sendResponse<IUser>(res, {
@@ -63,5 +76,6 @@ export const UserController = {
   getUser,
   getOwnProfile,
   updateUser,
+  changeRole,
   deleteUser,
 }

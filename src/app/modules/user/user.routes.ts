@@ -23,7 +23,7 @@ router.get(
 )
 
 router
-  .route('/:id')
+  .route('/admins/:email')
   .get(
     authGuard(
       ENUM_USER_ROLE.SUPER_ADMIN,
@@ -32,6 +32,10 @@ router
     ),
     UserController.getUser
   )
+  .patch(authGuard(ENUM_USER_ROLE.SUPER_ADMIN), UserController.changeRole)
+
+router
+  .route('/:id')
   .patch(
     authGuard(
       ENUM_USER_ROLE.SUPER_ADMIN,
