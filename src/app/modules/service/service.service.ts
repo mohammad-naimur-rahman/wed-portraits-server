@@ -50,10 +50,10 @@ const getAllServices = async (
     countQuery = countQuery.where('title').regex(new RegExp(query.search, 'i'))
   if (query.minPrice) countQuery = countQuery.where('price').gte(query.minPrice)
   if (query.maxPrice) countQuery = countQuery.where('price').lte(query.maxPrice)
-  if (query.category)
+  if (query.category && query.category !== 'all')
     countQuery = countQuery.where('category').equals(query.category)
-  if (query.category)
-    countQuery = countQuery.where('category').equals(query.category)
+  if (query.status && query.status !== 'all')
+    countQuery = countQuery.where('status').equals(query.category)
 
   const total = await countQuery.countDocuments()
   return {

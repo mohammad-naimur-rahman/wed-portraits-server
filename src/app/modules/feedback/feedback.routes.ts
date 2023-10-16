@@ -20,7 +20,7 @@ router
   )
 
 router
-  .route('/')
+  .route('/:id')
   .get(
     authGuard(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
     FeedbackController.getFeedback
@@ -29,3 +29,5 @@ router
     authGuard(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
     FeedbackController.deleteFeedback
   )
+
+export const FeedbackRoutes = router
