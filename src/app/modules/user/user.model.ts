@@ -15,7 +15,7 @@ const UserSchema = new Schema<IUser, UserModel>(
       type: String,
       required: true,
       unique: true,
-      validarot: (val: string) => {
+      validate: (val: string) => {
         return emailRegex.test(val)
       },
     },
@@ -23,7 +23,8 @@ const UserSchema = new Schema<IUser, UserModel>(
     password: {
       type: String,
       required: true,
-      validator: (val: string) => {
+      select: false,
+      validate: (val: string) => {
         return signUpRegex.test(val)
       },
     },
@@ -34,7 +35,7 @@ const UserSchema = new Schema<IUser, UserModel>(
     bookings: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Reservation',
+        ref: 'Bookings',
       },
     ],
   },

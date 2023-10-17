@@ -17,9 +17,9 @@ router.post(
   AuthController.signupUser
 )
 
-router.post(
+router.get(
   '/access-token',
-  validateRequest(AuthValidation.accessTokenZSchema),
+  // validateRequest(AuthValidation.accessTokenZSchema),
   AuthController.accessToken
 )
 

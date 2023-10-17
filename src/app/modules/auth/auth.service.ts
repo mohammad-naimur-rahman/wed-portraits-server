@@ -78,11 +78,23 @@ const signupUser = async (payload: ISignupUser): Promise<IAuthUserResponse> => {
 }
 
 const accessToken = async (token: string): Promise<IAccessTokenResponse> => {
+  console.log(token)
+
+  if (!token) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!')
+  }
+
+  const givenRefreshToken = token?.split(' ')[1]
+
+  if (givenRefreshToken === 'undefined') {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized!')
+  }
+
   let verifiedToken = null
 
   try {
     verifiedToken = jwtHelpers.verifyToken(
-      token,
+      givenRefreshToken,
       config.jwt.refresh_secret as Secret
     )
   } catch (err) {
@@ -101,7 +113,7 @@ const accessToken = async (token: string): Promise<IAccessTokenResponse> => {
   //generate new token
   const newAccessToken = jwtHelpers.createToken(
     {
-      id: isUserExist.id,
+      userId: isUserExist.id,
       role: isUserExist.role,
     },
     config.jwt.secret as Secret,

@@ -8,12 +8,12 @@ const createGallery = async (payload: IGallery): Promise<IGallery | null> => {
 }
 
 const getAllGalleries = async (): Promise<IGallery[]> => {
-  const allGalleries = await Gallery.find().populate('user')
+  const allGalleries = await Gallery.find()
   return allGalleries
 }
 
 const getGallery = async (id: string): Promise<IGallery | null> => {
-  const singleGallery = await Gallery.findById(id).populate('user')
+  const singleGallery = await Gallery.findById(id)
 
   if (!singleGallery) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Gallery not found')

@@ -42,16 +42,16 @@ const loginUser = catchAsync(async (req, res) => {
 
 const accessToken = catchAsync(async (req, res) => {
   const {
-    cookies: { refreshToken },
+    headers: { authorization },
   } = req
-  const newAccessToken = await AuthService.accessToken(req.cookies.refreshToken)
+  const newAccessToken = await AuthService.accessToken(authorization!)
 
-  const cookieOptions = {
-    secure: config.env === 'production',
-    httpOnly: true,
-  }
+  // const cookieOptions = {
+  //   secure: config.env === 'production',
+  //   httpOnly: true,
+  // }
 
-  res.cookie('refreshToken', refreshToken, cookieOptions)
+  // res.cookie('refreshToken', refreshToken, cookieOptions)
 
   sendResponse<IAccessTokenResponse>(res, {
     statusCode: httpStatus.OK,
