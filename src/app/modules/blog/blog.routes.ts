@@ -21,7 +21,7 @@ router
   .patch(
     authGuard(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
     validateRequest(BlogValidation.updateBlogZSchema),
-    BlogController.createBlog
+    BlogController.updateBlog
   )
   .delete(
     authGuard(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),

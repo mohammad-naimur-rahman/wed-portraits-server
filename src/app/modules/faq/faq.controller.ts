@@ -22,15 +22,6 @@ const getALllFaqs = catchAsync(async (req, res) => {
   })
 })
 
-const getFaq = catchAsync(async (req, res) => {
-  const singleFaq = await FaqService.getFaq(req.params.id)
-  sendResponse<IFaq>(res, {
-    statusCode: httpStatus.OK,
-    data: singleFaq,
-    message: 'Faq retrieved successfully!',
-  })
-})
-
 const updateFaq = catchAsync(async (req, res) => {
   const {
     params: { id },
@@ -56,7 +47,6 @@ const deleteFaq = catchAsync(async (req, res) => {
 export const FaqController = {
   createFaq,
   getALllFaqs,
-  getFaq,
   updateFaq,
   deleteFaq,
 }

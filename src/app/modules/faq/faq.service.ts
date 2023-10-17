@@ -9,18 +9,8 @@ const createFaq = async (payload: IFaq): Promise<IFaq | null> => {
 }
 
 const getAllFaqs = async (): Promise<IFaq[]> => {
-  const allFaqs = await Faq.find().populate('user')
+  const allFaqs = await Faq.find()
   return allFaqs
-}
-
-const getFaq = async (id: string): Promise<IFaq | null> => {
-  const singleFaq = await Faq.findById(id).populate('user')
-
-  if (!singleFaq) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Faq not found')
-  }
-
-  return singleFaq
 }
 
 const updateFaq = async (
@@ -52,7 +42,6 @@ const deleteFaq = async (id: string): Promise<null> => {
 export const FaqService = {
   createFaq,
   getAllFaqs,
-  getFaq,
   updateFaq,
   deleteFaq,
 }

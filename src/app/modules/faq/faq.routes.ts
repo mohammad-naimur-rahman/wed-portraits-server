@@ -18,7 +18,6 @@ router
 
 router
   .route('/:id')
-  .get(FaqController.getFaq)
   .patch(
     authGuard(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
     validateRequest(FaqValidation.updateFaqZSchema),
