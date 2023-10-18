@@ -8,8 +8,8 @@ const createBlog = async (payload: IBlog): Promise<IBlog | null> => {
   return createdBlog
 }
 
-const getAllBlogs = async (): Promise<IBlog[]> => {
-  const allBlogs = await Blog.find()
+const getAllBlogs = async (query: { limit?: number }): Promise<IBlog[]> => {
+  const allBlogs = await Blog.find().limit(query?.limit || 100)
   return allBlogs
 }
 

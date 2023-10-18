@@ -23,6 +23,8 @@ router
     ReviewController.createReview
   )
 
+router.get('/testimonials', ReviewController.getTestimonials)
+
 router
   .route('/:id')
   .get(

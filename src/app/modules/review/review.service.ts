@@ -23,6 +23,8 @@ const createReview = async (
       }
     )
 
+    await createdReview[0].populate('user')
+
     // Adding review to the specific service reviews array
     await Service.updateOne(
       { _id: payload.service },
@@ -60,6 +62,11 @@ const getAllReviews = async (user: JwtPayload): Promise<IReview[]> => {
   return allReviews
 }
 
+const getTestimonials = async (): Promise<IReview[]> => {
+  const testimonials = await Review.find().limit(5).populate('user')
+  return testimonials
+}
+
 const getReview = async (id: string): Promise<IReview | null> => {
   const singleReview = await Review.findById(id)
     .populate('user')
@@ -95,19 +102,22 @@ const deleteReview = async (id: string): Promise<null> => {
         session,
       }
     )
+
+    await session.commitTransaction()
+
+    return null
   } catch (error) {
     await session.abortTransaction()
     throw error
   } finally {
     session.endSession()
   }
-
-  return null
 }
 
 export const ReviewService = {
   createReview,
   getAllReviews,
+  getTestimonials,
   getReview,
   deleteReview,
 }

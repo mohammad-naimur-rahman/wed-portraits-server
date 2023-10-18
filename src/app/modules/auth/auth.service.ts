@@ -78,8 +78,6 @@ const signupUser = async (payload: ISignupUser): Promise<IAuthUserResponse> => {
 }
 
 const accessToken = async (token: string): Promise<IAccessTokenResponse> => {
-  console.log(token)
-
   if (!token) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!')
   }

@@ -71,6 +71,7 @@ const getService = async (id: string): Promise<IService | null> => {
     path: 'reviews',
     options: {
       populate: ['user'],
+      sort: { createdAt: -1 },
     },
   })
 

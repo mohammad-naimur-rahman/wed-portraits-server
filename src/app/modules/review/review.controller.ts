@@ -28,6 +28,15 @@ const getALllReviews = catchAsync(async (req, res) => {
   })
 })
 
+const getTestimonials = catchAsync(async (req, res) => {
+  const testimonials = await ReviewService.getTestimonials()
+  sendResponse<IReview[]>(res, {
+    statusCode: httpStatus.OK,
+    data: testimonials,
+    message: 'Testimonials retrieved successfully!',
+  })
+})
+
 const getReview = catchAsync(async (req, res) => {
   const singleReview = await ReviewService.getReview(req.params.id)
   sendResponse<IReview>(res, {
@@ -38,10 +47,10 @@ const getReview = catchAsync(async (req, res) => {
 })
 
 const deleteReview = catchAsync(async (req, res) => {
-  const deltedReview = await ReviewService.deleteReview(req.params.id)
+  const deletedReview = await ReviewService.deleteReview(req.params.id)
   sendResponse<IReview>(res, {
     statusCode: httpStatus.NO_CONTENT,
-    data: deltedReview,
+    data: deletedReview,
     message: 'Review deleted successfully!',
   })
 })
@@ -49,6 +58,7 @@ const deleteReview = catchAsync(async (req, res) => {
 export const ReviewController = {
   createReview,
   getALllReviews,
+  getTestimonials,
   getReview,
   deleteReview,
 }
