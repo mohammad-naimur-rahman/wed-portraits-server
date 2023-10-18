@@ -46,3 +46,5 @@ router
     authGuard(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
     BookingController.deleteBooking
   )
+
+export const BookingRoutes = router

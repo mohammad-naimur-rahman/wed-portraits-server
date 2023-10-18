@@ -3,7 +3,7 @@ import { z } from 'zod'
 const createBookingZSchema = z.object({
   body: z.object({
     service: z.string(),
-    date: z.date(),
+    date: z.coerce.date(),
     status: z
       .enum(['pending', 'confirmed', 'cancelled', 'ongoing', 'fulfilled'])
       .default('pending'),
@@ -13,7 +13,7 @@ const createBookingZSchema = z.object({
 const updateBookingZSchema = z.object({
   body: z.object({
     service: z.string().optional(),
-    date: z.date().optional(),
+    date: z.coerce.date().optional(),
     status: z
       .enum(['pending', 'confirmed', 'cancelled', 'ongoing', 'fulfilled'])
       .default('pending')
