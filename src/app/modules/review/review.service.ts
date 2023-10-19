@@ -52,8 +52,6 @@ const createReview = async (
 const getAllReviews = async (user: JwtPayload): Promise<IReview[]> => {
   const isAdmin = user.role === 'admin' || user.role === 'super_admin'
 
-  console.log(isAdmin)
-
   const findQuery = isAdmin ? {} : { user: user.userId }
 
   const allReviews = await Review.find(findQuery)

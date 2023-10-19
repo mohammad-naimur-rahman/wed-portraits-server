@@ -53,7 +53,7 @@ const getAllServices = async (
   if (query.category && query.category !== 'all')
     countQuery = countQuery.where('category').equals(query.category)
   if (query.status && query.status !== 'all')
-    countQuery = countQuery.where('status').equals(query.category)
+    countQuery = countQuery.where('status').equals(query.status)
 
   const total = await countQuery.countDocuments()
   return {

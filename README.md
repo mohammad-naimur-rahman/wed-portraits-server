@@ -10,9 +10,9 @@
 
 **Server**: `Node js`, `Express js`
 
-**Database**: `Mongoose`,
+**Database**: `Mongoose`
 
-**Type Safety and validation**: `TypeScrit`, `Zod`
+**Type Safety and validation**: `TypeScript`, `Zod`
 
 **Authentication and authorization**: `jsonwebtoken`, `bcrypt`
 
