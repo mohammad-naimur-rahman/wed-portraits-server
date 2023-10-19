@@ -25,6 +25,8 @@ router
 
 router.get('/dates/:serviceId', BookingController.getBookingDates)
 
+router.get('/has-taken/:serviceId/:userId', BookingController.hasTakenService)
+
 router
   .route('/:id')
   .get(

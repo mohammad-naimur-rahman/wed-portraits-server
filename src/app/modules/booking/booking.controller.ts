@@ -48,6 +48,18 @@ const getBookingDates = catchAsync(async (req, res) => {
   })
 })
 
+const hasTakenService = catchAsync(async (req, res) => {
+  const hasTaken = await BookingService.hasTakenService(
+    req.params.serviceId,
+    req.params.userId
+  )
+  sendResponse<IBooking[]>(res, {
+    statusCode: httpStatus.OK,
+    data: hasTaken,
+    message: 'Service Taking Status retrieved successfully!',
+  })
+})
+
 const updateBooking = catchAsync(async (req, res) => {
   const {
     params: { id },
@@ -79,6 +91,7 @@ export const BookingController = {
   getALllBookings,
   getBooking,
   getBookingDates,
+  hasTakenService,
   updateBooking,
   deleteBooking,
 }

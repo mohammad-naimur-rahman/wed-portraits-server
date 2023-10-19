@@ -14,14 +14,14 @@ import {
 } from './auth.interface'
 
 const loginUser = async (payload: ILoginUser): Promise<IAuthUserResponse> => {
-  const { email, password } = payload
-  const isExist = await User.findOne({ email }).select('-password')
+  const { email, password: userPassword } = payload
+  const isExist = await User.findOne({ email }).select('+password')
 
   if (!isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User does not exist!')
   }
 
-  if (isExist.password && !(await bcrypt.compare(password, isExist.password))) {
+  if (!(await bcrypt.compare(userPassword, isExist.password))) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Password is incorrect!')
   }
 

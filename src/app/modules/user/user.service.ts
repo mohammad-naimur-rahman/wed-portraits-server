@@ -8,12 +8,12 @@ import { User } from './user.model'
 const getAllUsers = async (query: { admins?: string }): Promise<IUser[]> => {
   const findCondition =
     query?.admins === 'true' ? { role: { $in: ['super_admin', 'admin'] } } : {}
-  const allUsers = await User.find(findCondition).select('-password')
+  const allUsers = await User.find(findCondition)
   return allUsers
 }
 
 const getUser = async (email: string): Promise<IUser | null> => {
-  const singleUser = await User.findOne({ email }).select('-password')
+  const singleUser = await User.findOne({ email })
 
   if (!singleUser) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found')
@@ -23,7 +23,7 @@ const getUser = async (email: string): Promise<IUser | null> => {
 }
 
 const getOwnProfile = async (user: JwtPayload): Promise<IUser | null> => {
-  const profile = await User.findById(user.userId).select('-password')
+  const profile = await User.findById(user.userId)
 
   if (!profile) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found')

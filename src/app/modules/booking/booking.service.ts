@@ -87,6 +87,25 @@ const getBookingDates = async (serviceId: string): Promise<Date[]> => {
   return bookingDates
 }
 
+const hasTakenService = async (
+  serviceId: string,
+  userId: string
+): Promise<IBooking[]> => {
+  const service = await Service.findById(serviceId)
+
+  if (!service) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Service not found')
+  }
+
+  const hasTakenService = await Booking.find({
+    service: serviceId,
+    user: userId,
+    status: 'fulfilled',
+  }).select('id')
+
+  return hasTakenService
+}
+
 const updateBooking = async (
   id: string,
   payload: IBooking,
@@ -168,6 +187,7 @@ export const BookingService = {
   getAllBookings,
   getBooking,
   getBookingDates,
+  hasTakenService,
   updateBooking,
   deleteBooking,
 }
