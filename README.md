@@ -9,10 +9,15 @@
 ### Library and tools used
 
 **Server**: `Node js`, `Express js`
+
 **Database**: `Mongoose`,
+
 **Type Safety and validation**: `TypeScrit`, `Zod`
+
 **Authentication and authorization**: `jsonwebtoken`, `bcrypt`
+
 **Linting and prettifying**: `ESLint`, `Prettier`
+
 **Pre commit checking**: `Husky`, `Lint Staged`
 
 ### Features
