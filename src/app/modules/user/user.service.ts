@@ -37,10 +37,23 @@ const updateUser = async (
   payload: IUser,
   user: JwtPayload
 ): Promise<IUser | null> => {
-  if (user.userId !== id) {
+  const targetedUser = await User.findById(id)
+
+  if (!targetedUser) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found')
+  }
+
+  if (user.role === 'user' && user.userId !== id) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
       `You can't change other user's profile`
+    )
+  }
+
+  if (user.role !== 'user' && targetedUser.role !== 'user') {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      `You can't change other admin's profile`
     )
   }
 

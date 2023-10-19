@@ -23,8 +23,10 @@ router
     BookingController.createBooking
   )
 
+router.get('/dates/:serviceId', BookingController.getBookingDates)
+
 router
-  .route('/')
+  .route('/:id')
   .get(
     authGuard(
       ENUM_USER_ROLE.SUPER_ADMIN,

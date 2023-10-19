@@ -37,12 +37,27 @@ const getBooking = catchAsync(async (req, res) => {
   })
 })
 
+const getBookingDates = catchAsync(async (req, res) => {
+  const bookingDates = await BookingService.getBookingDates(
+    req.params.serviceId
+  )
+  sendResponse<Date[]>(res, {
+    statusCode: httpStatus.OK,
+    data: bookingDates,
+    message: 'Booking dates retrieved successfully!',
+  })
+})
+
 const updateBooking = catchAsync(async (req, res) => {
   const {
     params: { id },
     body,
   } = req
-  const updatedBooking = await BookingService.updateBooking(id, body)
+  const updatedBooking = await BookingService.updateBooking(
+    id,
+    body,
+    (req as RequestWithUser).user
+  )
   sendResponse<IBooking>(res, {
     statusCode: httpStatus.OK,
     data: updatedBooking,
@@ -63,6 +78,7 @@ export const BookingController = {
   createBooking,
   getALllBookings,
   getBooking,
+  getBookingDates,
   updateBooking,
   deleteBooking,
 }

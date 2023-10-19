@@ -2,6 +2,7 @@ import httpStatus from 'http-status'
 import { JwtPayload } from 'jsonwebtoken'
 import { startSession } from 'mongoose'
 import ApiError from '../../../errors/ApiError'
+import { Service } from '../service/service.model'
 import { User } from '../user/user.model'
 import { IBooking } from './booking.interface'
 import { Booking } from './booking.model'
@@ -48,7 +49,7 @@ const createBooking = async (
 }
 
 const getAllBookings = async (user: JwtPayload): Promise<IBooking[]> => {
-  const isAdmin = user.role === 'admin' || user.role === 'super_dmin'
+  const isAdmin = user.role === 'admin' || user.role === 'super_admin'
 
   const findQuery = isAdmin ? {} : { user: user.userId }
 
@@ -70,9 +71,26 @@ const getBooking = async (id: string): Promise<IBooking | null> => {
   return singleBooking
 }
 
+const getBookingDates = async (serviceId: string): Promise<Date[]> => {
+  const service = await Service.findById(serviceId)
+
+  if (!service) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Service not found')
+  }
+
+  const bookings = await Booking.find({
+    service: serviceId,
+    status: { $in: ['pending', 'confirmed', 'ongoing'] },
+  })
+
+  const bookingDates = bookings.map(booking => booking.date)
+  return bookingDates
+}
+
 const updateBooking = async (
   id: string,
-  payload: IBooking
+  payload: IBooking,
+  user: JwtPayload
 ): Promise<IBooking | null> => {
   const currentBooking = await Booking.findById(id)
 
@@ -84,15 +102,17 @@ const updateBooking = async (
 
   const { status } = payload
 
-  if (
-    (currentStatus === 'confirmed' ||
-      currentStatus === 'ongoing' ||
-      currentStatus === 'fulfilled') &&
-    status === 'cancelled'
-  ) {
+  if (currentStatus !== 'pending' && status === 'cancelled') {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
       'Booking cannot be cancelled after confirmation!'
+    )
+  }
+
+  if (status !== 'cancelled' && user.role === 'user') {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'User can not update booking other than cancelling!'
     )
   }
 
@@ -131,6 +151,8 @@ const deleteBooking = async (id: string): Promise<null> => {
         session,
       }
     )
+
+    await session.commitTransaction()
   } catch (error) {
     await session.abortTransaction()
     throw error
@@ -145,6 +167,7 @@ export const BookingService = {
   createBooking,
   getAllBookings,
   getBooking,
+  getBookingDates,
   updateBooking,
   deleteBooking,
 }
