@@ -19,6 +19,7 @@ const createBooking = catchAsync(async (req, res) => {
 
 const getALllBookings = catchAsync(async (req, res) => {
   const allBookings = await BookingService.getAllBookings(
+    req.query,
     (req as RequestWithUser).user
   )
   sendResponse<IBooking[]>(res, {

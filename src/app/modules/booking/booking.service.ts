@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status'
 import { JwtPayload } from 'jsonwebtoken'
 import { startSession } from 'mongoose'
 import ApiError from '../../../errors/ApiError'
 import { Service } from '../service/service.model'
 import { User } from '../user/user.model'
-import { IBooking } from './booking.interface'
+import { IBooking, IBookingQuery } from './booking.interface'
 import { Booking } from './booking.model'
 
 const createBooking = async (
@@ -48,12 +49,25 @@ const createBooking = async (
   }
 }
 
-const getAllBookings = async (user: JwtPayload): Promise<IBooking[]> => {
+const getAllBookings = async (
+  query: any,
+  user: JwtPayload
+): Promise<IBooking[]> => {
+  const findQuery: IBookingQuery = {}
+
   const isAdmin = user.role === 'admin' || user.role === 'super_admin'
 
-  const findQuery = isAdmin ? {} : { user: user.userId }
+  if (!isAdmin) {
+    findQuery.user = user.userId
+  }
 
-  const allBookings = await Booking.find(findQuery)
+  if (query.status && query.status !== 'all') {
+    findQuery.status = query.status
+  }
+
+  console.log(findQuery)
+
+  const allBookings = Booking.find(findQuery)
     .populate('user')
     .populate('service')
   return allBookings
