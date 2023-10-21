@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status'
 import ApiError from '../../../errors/ApiError'
 import { IGenericResponse } from '../../../interfaces/common'
 import { IService } from './service.interface'
 import { Service } from './service.model'
+import { buildQuery } from './service.utils'
 
 const createService = async (payload: IService): Promise<IService | null> => {
   const createdService = await Service.create(payload)
@@ -10,52 +12,28 @@ const createService = async (payload: IService): Promise<IService | null> => {
 }
 
 const getAllServices = async (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query: any
 ): Promise<IGenericResponse<IService[]>> => {
-  let baseQuery = Service.find()
-
-  // Search by title
-  if (query.search)
-    baseQuery = baseQuery.where('title').regex(new RegExp(query.search, 'i'))
-
-  // Filter by price range
-  if (query.minPrice) baseQuery = baseQuery.where('price').gte(query.minPrice)
-  if (query.maxPrice) baseQuery = baseQuery.where('price').lte(query.maxPrice)
-
-  // Filter by category
-  if (query.category && query.category !== 'all')
-    baseQuery = baseQuery.where('category').equals(query.category)
-
-  // Filter by status
-  if (query.status && query.status !== 'all')
-    baseQuery = baseQuery.where('status').equals(query.status)
-
-  // Sort by a field
-  const sortByField = query.sortBy || 'createdAt'
-  const sortOrder = query.sortOrder === 'desc' ? -1 : 1
-  baseQuery = baseQuery.sort({ [sortByField]: sortOrder })
+  const conditions = buildQuery(query)
 
   // Pagination
   const page = parseInt(query.page, 10) || 1
   const limit = parseInt(query.limit, 10) || 10
   const skip = (page - 1) * limit
-  baseQuery = baseQuery.skip(skip).limit(limit)
 
-  const allServices = await baseQuery.exec()
+  // Sort by a field
+  const sortByField = query.sortBy || 'createdAt'
+  const sortOrder = query.sortOrder === 'desc' ? -1 : 1
+
+  const allServices = await Service.find(conditions)
+    .sort({ [sortByField]: sortOrder })
+    .skip(skip)
+    .limit(limit)
+    .exec()
 
   // Counting total
-  let countQuery = Service.find()
-  if (query.search)
-    countQuery = countQuery.where('title').regex(new RegExp(query.search, 'i'))
-  if (query.minPrice) countQuery = countQuery.where('price').gte(query.minPrice)
-  if (query.maxPrice) countQuery = countQuery.where('price').lte(query.maxPrice)
-  if (query.category && query.category !== 'all')
-    countQuery = countQuery.where('category').equals(query.category)
-  if (query.status && query.status !== 'all')
-    countQuery = countQuery.where('status').equals(query.status)
+  const total = await Service.countDocuments(conditions)
 
-  const total = await countQuery.countDocuments()
   return {
     meta: {
       page,

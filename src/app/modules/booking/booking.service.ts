@@ -65,8 +65,6 @@ const getAllBookings = async (
     findQuery.status = query.status
   }
 
-  console.log(findQuery)
-
   const allBookings = Booking.find(findQuery)
     .populate('user')
     .populate('service')
