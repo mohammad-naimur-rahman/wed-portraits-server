@@ -65,7 +65,7 @@ const getBooking = async (id: string): Promise<IBooking | null> => {
     .populate('service')
 
   if (!singleBooking) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Booking not found')
+    throw new ApiError(httpStatus.NOT_FOUND, 'Booking not found!')
   }
 
   return singleBooking
@@ -75,7 +75,7 @@ const getBookingDates = async (serviceId: string): Promise<Date[]> => {
   const service = await Service.findById(serviceId)
 
   if (!service) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Service not found')
+    throw new ApiError(httpStatus.NOT_FOUND, 'Service not found!')
   }
 
   const bookings = await Booking.find({
@@ -94,7 +94,7 @@ const hasTakenService = async (
   const service = await Service.findById(serviceId)
 
   if (!service) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Service not found')
+    throw new ApiError(httpStatus.NOT_FOUND, 'Service not found!')
   }
 
   const hasTakenService = await Booking.find({
@@ -135,7 +135,17 @@ const updateBooking = async (
     )
   }
 
-  if (currentStatus !== 'pending' && status == 'pending') {
+  if (currentStatus === 'cancelled' && status !== 'cancelled') {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Booking cannot be updated after cancellation!'
+    )
+  }
+
+  if (
+    (currentStatus !== 'pending' && status == 'pending') ||
+    (currentStatus === 'fulfilled' && status == 'ongoing')
+  ) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Booking cannot be backwarded!')
   }
 
@@ -153,16 +163,25 @@ const deleteBooking = async (id: string): Promise<null> => {
   try {
     session.startTransaction()
 
-    // Deleting Booking
-    const deletedBooking = await Booking.findByIdAndDelete(id, { session })
+    const targetedBooking = await Booking.findById(id)
 
-    if (!deletedBooking) {
+    if (!targetedBooking) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Booking not found')
     }
 
+    if (targetedBooking.status !== 'ongoing') {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        `Ongoing event's booking can't be deleted!`
+      )
+    }
+
+    // Deleting Booking
+    await Booking.findByIdAndDelete(id, { session })
+
     // Removing Booking from the specific service Bookings array
     await User.updateOne(
-      { _id: deletedBooking.user },
+      { _id: targetedBooking.user },
       { $pull: { bookings: id } },
       {
         new: true,
@@ -172,14 +191,14 @@ const deleteBooking = async (id: string): Promise<null> => {
     )
 
     await session.commitTransaction()
+
+    return null
   } catch (error) {
     await session.abortTransaction()
     throw error
   } finally {
     session.endSession()
   }
-
-  return null
 }
 
 export const BookingService = {
