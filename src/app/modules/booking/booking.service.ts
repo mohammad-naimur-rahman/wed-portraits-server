@@ -20,7 +20,7 @@ const createBooking = async (req: RequestWithUser): Promise<string | null> => {
 
   try {
     event = stripe.webhooks.constructEvent(
-      req.body,
+      req.body.toString(),
       sig!,
       config.stripeConfigs.webhook_secret
     )
