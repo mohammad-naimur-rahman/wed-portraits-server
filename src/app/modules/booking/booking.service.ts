@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Request } from 'express'
 import httpStatus from 'http-status'
 import { JwtPayload } from 'jsonwebtoken'
 import { startSession } from 'mongoose'
 import config from '../../../config'
 import ApiError from '../../../errors/ApiError'
-import { RequestWithUser } from '../../../interfaces/common'
 import { stripe } from '../../../lib/stripe'
 import { Payment } from '../payment/payment.model'
 import { Service } from '../service/service.model'
@@ -12,7 +12,7 @@ import { User } from '../user/user.model'
 import { IBooking, IBookingQuery } from './booking.interface'
 import { Booking } from './booking.model'
 
-const createBooking = async (req: RequestWithUser): Promise<string | null> => {
+const createBooking = async (req: Request): Promise<string | null> => {
   const user = req.user as JwtPayload
   const sig = req.headers['stripe-signature']
 
@@ -20,7 +20,7 @@ const createBooking = async (req: RequestWithUser): Promise<string | null> => {
 
   try {
     event = stripe.webhooks.constructEvent(
-      req.body.toString(),
+      (req as any).rawBody,
       sig!,
       config.stripeConfigs.webhook_secret
     )
