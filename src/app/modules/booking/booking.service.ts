@@ -14,14 +14,21 @@ import { Booking } from './booking.model'
 
 const createBooking = async (req: Request): Promise<string | null> => {
   const user = req.user as JwtPayload
-  const sig = req.headers['stripe-signature']
+  // const sig = req.headers['stripe-signature']
+
+  const payloadString = JSON.stringify(req.body, null, 2)
+
+  const header = stripe.webhooks.generateTestHeaderString({
+    payload: payloadString,
+    secret: config.stripeConfigs.webhook_secret,
+  })
 
   let event
 
   try {
     event = stripe.webhooks.constructEvent(
-      (req as any).rawBody,
-      sig!,
+      payloadString,
+      header,
       config.stripeConfigs.webhook_secret
     )
   } catch (err) {

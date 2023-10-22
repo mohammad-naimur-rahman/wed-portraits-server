@@ -8,6 +8,7 @@ import { Payment } from './payment.model'
 const proceedToPayment = async (
   payload: IBookingService[]
 ): Promise<string> => {
+  console.log(payload)
   const lineItems = payload.map((booking: IBookingService) => {
     const images = [(booking.service as unknown as IService).image].filter(
       Boolean

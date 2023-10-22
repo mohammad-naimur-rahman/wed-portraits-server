@@ -7,6 +7,8 @@ import { BookingValidation } from './booking.validation'
 
 const router = Router()
 
+router.use(express.raw({ type: 'application/json' }))
+
 router
   .route('/')
   .get(

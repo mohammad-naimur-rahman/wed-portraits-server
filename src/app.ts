@@ -11,8 +11,7 @@ app.use(cors())
 app.use(cookieParser())
 
 //parser
-app.use(express.json({ limit: '10mb' }))
-// app.use(express.raw({ type: 'application/json', limit: '10mb' }))
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use('/api/v1', routes)
