@@ -13,7 +13,7 @@ import { IBooking, IBookingQuery } from './booking.interface'
 import { Booking } from './booking.model'
 
 const createBooking = async (req: Request): Promise<string | null> => {
-  // const sig = req.headers['stripe-signature']
+  // This API runs automatically when the payment is done, it triggers Stripe Webhook, so don't need to trigger this API manually
 
   const payloadString = JSON.stringify(req.body, null, 2)
 
@@ -193,6 +193,13 @@ const updateBooking = async (
   const currentStatus = currentBooking.status
 
   const { status } = payload
+
+  if (status === 'confirmed') {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Bookings are confirmed automatically after payment!'
+    )
+  }
 
   if (currentStatus !== 'pending' && status === 'cancelled') {
     throw new ApiError(
