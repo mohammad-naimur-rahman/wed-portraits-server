@@ -6,13 +6,12 @@ import { IBooking } from './booking.interface'
 import { BookingService } from './booking.service'
 
 const createBooking = catchAsync(async (req, res) => {
-  const createdBooking = await BookingService.createBooking(
-    req.body,
-    (req as RequestWithUser).user
+  const paymentMessage = await BookingService.createBooking(
+    req as RequestWithUser
   )
-  sendResponse<IBooking>(res, {
+  sendResponse<string>(res, {
     statusCode: httpStatus.CREATED,
-    data: createdBooking,
+    data: paymentMessage,
     message: 'Booking created successfully!',
   })
 })

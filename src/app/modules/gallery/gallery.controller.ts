@@ -3,6 +3,7 @@ import catchAsync from '../../../shared/catchAsync'
 import sendResponse from '../../../shared/sendResponse'
 import { IGallery } from './gallery.interface'
 import { GalleryService } from './gallery.service'
+
 const createGallery = catchAsync(async (req, res) => {
   const createdGallery = await GalleryService.createGallery(req.body)
   sendResponse<IGallery>(res, {

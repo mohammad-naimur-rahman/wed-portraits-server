@@ -33,7 +33,7 @@ const authGuard =
 
       // Check if user is in required roles
       if (requiredRoles.length && !requiredRoles.includes(verifiedUser.role)) {
-        throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden')
+        throw new ApiError(httpStatus.FORBIDDEN, `You can't do this action`)
       }
 
       next()

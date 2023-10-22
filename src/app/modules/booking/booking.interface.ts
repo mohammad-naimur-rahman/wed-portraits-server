@@ -1,9 +1,10 @@
 import { Model, Types } from 'mongoose'
+import { IService } from '../service/service.interface'
 
 type Status = 'pending' | 'confirmed' | 'cancelled' | 'ongoing' | 'fulfilled'
 
 export interface IBooking {
-  service: Types.ObjectId
+  service: Types.ObjectId | IService
   user: Types.ObjectId
   date: Date
   status: Status

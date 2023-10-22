@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import express, { Router } from 'express'
 import { ENUM_USER_ROLE } from '../../../enums/user'
 import authGuard from '../../middlewares/authGuard'
 import validateRequest from '../../middlewares/validateRequest'
@@ -18,8 +18,7 @@ router
     BookingController.getALllBookings
   )
   .post(
-    authGuard(ENUM_USER_ROLE.USER),
-    validateRequest(BookingValidation.createBookingZSchema),
+    express.raw({ type: 'application/json' }),
     BookingController.createBooking
   )
 

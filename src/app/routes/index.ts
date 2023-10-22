@@ -5,6 +5,7 @@ import { BookingRoutes } from '../modules/booking/booking.routes'
 import { FaqRoutes } from '../modules/faq/faq.routes'
 import { FeedbackRoutes } from '../modules/feedback/feedback.routes'
 import { GalleryRoutes } from '../modules/gallery/gallery.routes'
+import { PaymentRoutes } from '../modules/payment/payment.routes'
 import { ReviewRoutes } from '../modules/review/review.routes'
 import { ServiceRoutes } from '../modules/service/service.routes'
 import { UserRoutes } from '../modules/user/user.routes'
@@ -47,6 +48,10 @@ const moduleRoutes = [
   {
     path: '/galleries',
     routes: GalleryRoutes,
+  },
+  {
+    path: '/payment',
+    routes: PaymentRoutes,
   },
 ]
 

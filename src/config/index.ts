@@ -16,6 +16,9 @@ const envVarSchema = z.object({
   JWT_REFRESH_SECRET: z.string(),
   JWT_EXPIRES_IN: z.string(),
   JWT_REFRESH_EXPIRES_IN: z.string(),
+  STRIPE_SECRET_KEY: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
+  FE_HOST: z.string(),
 })
 
 const envVars = envVarSchema.parse(process.env)
@@ -31,4 +34,9 @@ export default {
     expires_in: envVars.JWT_EXPIRES_IN,
     refresh_expires_in: envVars.JWT_REFRESH_EXPIRES_IN,
   },
+  stripeConfigs: {
+    secret_key: envVars.STRIPE_SECRET_KEY,
+    webhook_secret: envVars.STRIPE_WEBHOOK_SECRET,
+  },
+  fe_host: envVars.FE_HOST,
 }

@@ -2,50 +2,92 @@
 import httpStatus from 'http-status'
 import { JwtPayload } from 'jsonwebtoken'
 import { startSession } from 'mongoose'
+import config from '../../../config'
 import ApiError from '../../../errors/ApiError'
+import { RequestWithUser } from '../../../interfaces/common'
+import { stripe } from '../../../lib/stripe'
+import { Payment } from '../payment/payment.model'
 import { Service } from '../service/service.model'
 import { User } from '../user/user.model'
 import { IBooking, IBookingQuery } from './booking.interface'
 import { Booking } from './booking.model'
 
-const createBooking = async (
-  payload: IBooking,
-  user: JwtPayload
-): Promise<IBooking | null> => {
-  const session = await startSession()
+const createBooking = async (req: RequestWithUser): Promise<string | null> => {
+  const user = req.user as JwtPayload
+  const sig = req.headers['stripe-signature']
+
+  let event
 
   try {
-    session.startTransaction()
-
-    // Creating Booking
-    const createdBooking = await Booking.create(
-      [{ ...payload, user: user.userId }],
-      {
-        session,
-      }
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig!,
+      config.stripeConfigs.webhook_secret
     )
+  } catch (err) {
+    return (err as Error).message
+  }
 
-    // Adding Booking to the specific service Bookings array
-    await User.updateOne(
-      { _id: user.userId },
-      {
-        $push: { bookings: createdBooking[0]._id },
-      },
-      {
-        new: true,
-        runValidators: true,
-        session,
+  switch (event.type) {
+    case 'checkout.session.completed': {
+      const checkoutSession = event.data.object
+
+      const session = await startSession()
+
+      try {
+        session.startTransaction()
+
+        if (!checkoutSession.metadata?.id) {
+          throw new ApiError(httpStatus.BAD_REQUEST, 'Checkout Failed!')
+        }
+
+        const currentBooking = await Payment.findById(
+          checkoutSession.metadata.id
+        )
+
+        if (!currentBooking) {
+          throw new ApiError(httpStatus.NOT_FOUND, 'No booking found!')
+        }
+
+        const itemsToSave: IBooking[] = currentBooking.services.map(service => {
+          return {
+            service: service.service,
+            date: service.date,
+            status: 'confirmed',
+            user: user.userId,
+          }
+        })
+
+        // Creating Booking
+        const createdBooking = await Booking.insertMany(itemsToSave, {
+          session,
+        })
+
+        // Adding Booking to the specific service Bookings array
+        await User.updateOne(
+          { _id: user.userId },
+          {
+            $push: { bookings: createdBooking.map(booking => booking._id) },
+          },
+          {
+            new: true,
+            runValidators: true,
+            session,
+          }
+        )
+
+        await session.commitTransaction()
+
+        return 'Payment Successful!'
+      } catch (error) {
+        await session.abortTransaction()
+        throw error
+      } finally {
+        session.endSession()
       }
-    )
-
-    await session.commitTransaction()
-
-    return createdBooking[0]
-  } catch (error) {
-    await session.abortTransaction()
-    throw error
-  } finally {
-    session.endSession()
+    }
+    default:
+      return 'Payment Failed!'
   }
 }
 
