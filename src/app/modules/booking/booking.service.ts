@@ -41,9 +41,11 @@ const createBooking = async (req: RequestWithUser): Promise<string | null> => {
           throw new ApiError(httpStatus.BAD_REQUEST, 'Checkout Failed!')
         }
 
-        const currentBooking = await Payment.findById(
-          checkoutSession.metadata.id
-        )
+        const paymentId = checkoutSession.metadata.id
+
+        const currentBooking = await Payment.findById(paymentId)
+
+        console.log({ currentBooking })
 
         if (!currentBooking) {
           throw new ApiError(httpStatus.NOT_FOUND, 'No booking found!')
@@ -63,6 +65,16 @@ const createBooking = async (req: RequestWithUser): Promise<string | null> => {
           session,
         })
 
+        console.log('BOOKING CREATED')
+
+        await Payment.findByIdAndUpdate(
+          paymentId,
+          { status: 'fulfilled' },
+          { session, runValidators: true }
+        )
+
+        console.log('PAYMENT UPDATED')
+
         // Adding Booking to the specific service Bookings array
         await User.updateOne(
           { _id: user.userId },
@@ -70,11 +82,12 @@ const createBooking = async (req: RequestWithUser): Promise<string | null> => {
             $push: { bookings: createdBooking.map(booking => booking._id) },
           },
           {
-            new: true,
             runValidators: true,
             session,
           }
         )
+
+        console.log('USER UPDATED')
 
         await session.commitTransaction()
 
