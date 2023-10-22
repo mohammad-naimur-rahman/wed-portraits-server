@@ -13,7 +13,6 @@ import { IBooking, IBookingQuery } from './booking.interface'
 import { Booking } from './booking.model'
 
 const createBooking = async (req: Request): Promise<string | null> => {
-  const user = req.user as JwtPayload
   // const sig = req.headers['stripe-signature']
 
   const payloadString = JSON.stringify(req.body, null, 2)
@@ -63,7 +62,7 @@ const createBooking = async (req: Request): Promise<string | null> => {
             service: service.service,
             date: service.date,
             status: 'confirmed',
-            user: user.userId,
+            user: currentBooking.user,
           }
         })
 
@@ -84,7 +83,7 @@ const createBooking = async (req: Request): Promise<string | null> => {
 
         // Adding Booking to the specific service Bookings array
         await User.updateOne(
-          { _id: user.userId },
+          { _id: currentBooking.user },
           {
             $push: { bookings: createdBooking.map(booking => booking._id) },
           },

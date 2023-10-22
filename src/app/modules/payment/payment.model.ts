@@ -28,6 +28,11 @@ const PaymentSchema = new Schema<IPayment, PaymentModel>(
       type: String,
       enum: ['pending', 'fulfilled', 'cancelled'],
     },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
   },
   {
     timestamps: true,

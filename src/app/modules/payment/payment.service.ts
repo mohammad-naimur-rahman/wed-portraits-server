@@ -5,11 +5,11 @@ import { IService } from '../service/service.interface'
 import { IBookingService } from './payment.interface'
 import { Payment } from './payment.model'
 
-const proceedToPayment = async (
-  payload: IBookingService[]
-): Promise<string> => {
-  console.log(payload)
-  const lineItems = payload.map((booking: IBookingService) => {
+const proceedToPayment = async (payload: {
+  services: IBookingService[]
+  user: string
+}): Promise<string> => {
+  const lineItems = payload.services.map((booking: IBookingService) => {
     const images = [(booking.service as unknown as IService).image].filter(
       Boolean
     )
@@ -30,7 +30,7 @@ const proceedToPayment = async (
     }
   })
 
-  const services: IBookingService[] = payload.map(item => {
+  const services: IBookingService[] = payload.services.map(item => {
     return {
       service: new Types.ObjectId(item.service.id),
       date: item.date,
@@ -39,6 +39,7 @@ const proceedToPayment = async (
 
   const paymentInit = await Payment.create({
     services,
+    user: payload.user,
     status: 'pending',
   })
 
